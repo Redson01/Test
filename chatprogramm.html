@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatprogramm</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<h1>Chatprogramm</h1>
+
+<form id="chatForm">
+    <div>
+        <textarea id="chatMessages" rows="10" cols="30" readonly></textarea>
+    </div>
+
+    <div>
+        <input type="text" id="username" placeholder="Benutzername" name="username">
+        <input type="text" id="message" placeholder="Nachricht" name="message">
+        <button type="button" onclick="sendMessage()">Enter</button>
+        <button type="button" onclick="refreshMessages()">Refresh</button>
+    </div>
+</form>
+
+<script>
+    function sendMessage() {
+        var username = document.getElementById('username').value;
+        var message = document.getElementById('message').value;
+
+        if (username && message) {
+            $.ajax({
+                url: 'test.php',
+                method: 'POST',
+                data: { username: username, message: message },
+                success: function () {
+                    document.getElementById('message').value = '';
+                    refreshMessages();
+                }
+            });
+        }
+    }
+
+    function refreshMessages() {
+        $.ajax({
+            url: 'test.php',
+            method: 'GET',
+            success: function (data) {
+                document.getElementById('chatMessages').value = data;
+            }
+        });
+    }
+
+    // Initial refresh
+    refreshMessages();
+
+    // Automatic refresh every 5 seconds
+    setInterval(refreshMessages, 5000);
+</script>
+
+</body>
+</html>
